@@ -41,3 +41,15 @@ Transaction metrics are computed by tested functions/queries. RAG is for unstruc
 **Status:** accepted
 
 The MVP recommends and records actions but does not autonomously email, discount, or contact customers.
+
+## ADR-008: Exact numeric money in PostgreSQL
+
+**Status:** accepted
+
+Persist prices and line amounts as fixed-precision `NUMERIC`, not binary floating point. The loader recomputes line amount from validated quantity and unit price, and the database enforces the relationship.
+
+## ADR-009: Content-fingerprint import idempotency
+
+**Status:** accepted
+
+Each workspace accepts a successful pair of processed purchase/return files once per versioned SHA-256 fingerprint. This prevents accidental duplicate full-snapshot loading without assuming that two legitimate invoice lines can be deduplicated from business fields alone.

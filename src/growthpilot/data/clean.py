@@ -78,6 +78,7 @@ def clean_transactions(raw: pd.DataFrame) -> CleanResult:
     flag(frame["invoice_date"].isna(), "invalid_invoice_date")
     flag(frame["quantity"].isna(), "invalid_quantity")
     flag(frame["quantity"].eq(0), "zero_quantity")
+    flag(frame["quantity"].notna() & frame["quantity"].mod(1).ne(0), "nonintegral_quantity")
     flag(frame["unit_price"].isna(), "invalid_unit_price")
     flag(frame["unit_price"].lt(0), "negative_unit_price")
 

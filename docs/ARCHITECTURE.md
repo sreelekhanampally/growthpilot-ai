@@ -74,6 +74,8 @@ flowchart TD
 
 Core tables: `workspaces`, `users`, `customers`, `products`, `orders`, `order_items`, `customer_feature_snapshots`, `customer_segments`, `model_scores`, `recommendations`, `next_best_actions`, `action_outcomes`, `documents`, `document_chunks`, `copilot_conversations`, and `model_runs`.
 
+Phase 2 implements `workspaces`, `data_imports`, `customers`, `products`, `orders`, and `order_items`. The remaining tables are introduced only with the feature that owns them.
+
 Every business table will include `workspace_id`. Time-varying facts carry an `as_of_date` or timestamp plus a feature/model/policy version.
 
 ## Copilot safety boundary

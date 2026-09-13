@@ -2,7 +2,7 @@
 
 Sales and customer-intelligence copilot for small and medium retail businesses.
 
-This repository currently implements **Phase 0–1** of the build:
+This repository currently implements **Phase 0–2** of the build:
 
 - product requirements and architecture decisions;
 - leakage-safe churn and purchase-propensity definitions;
@@ -13,6 +13,8 @@ This repository currently implements **Phase 0–1** of the build:
 - dataset quality gates and reconciliation metrics;
 - automated exploratory data analysis (EDA);
 - unit and end-to-end tests.
+- a normalized PostgreSQL schema with Alembic migrations;
+- an idempotent, chunked Phase 1-to-PostgreSQL loader.
 
 The ML, API, UI, recommendations, and copilot layers intentionally come later. The foundation first establishes which records and facts every future model may trust.
 
@@ -48,6 +50,18 @@ pytest
 ```
 
 Generated files are written under `data/processed/` and `reports/eda/`.
+
+## Phase 2: PostgreSQL persistence
+
+After running Phase 1, configure a PostgreSQL 16+ database:
+
+```bash
+export DATABASE_URL="postgresql+psycopg://growthpilot:growthpilot@localhost:5432/growthpilot"
+growthpilot db-upgrade
+growthpilot load-db
+```
+
+The loader validates the Phase 1 contract again, reads in bounded chunks, preserves exact decimal money, separates purchase/return orders, records SHA-256 import provenance, and skips an identical successful import.
 
 ## Run with the complete UCI dataset
 
@@ -86,14 +100,16 @@ The downloader accepts the official `.zip` archive or a direct `.xlsx` URL, veri
 ```text
 growthpilot-ai/
 ├── docs/                   # Phase 0 product and technical decisions
+├── migrations/             # Versioned Alembic database schema
 ├── src/growthpilot/data/   # Phase 1 ingestion, cleaning, QA, EDA
+├── src/growthpilot/db/     # Phase 2 models, sessions, migrations, loader
 ├── data/sample/            # Synthetic edge-case fixture only
 ├── tests/                  # Unit and end-to-end verification
 ├── reports/                # Generated EDA (ignored except placeholders)
 └── pyproject.toml
 ```
 
-See [docs/PHASE_0_PRD.md](docs/PHASE_0_PRD.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md), and [docs/PHASE_1_RESULTS.md](docs/PHASE_1_RESULTS.md) before extending the project.
+See [docs/PHASE_0_PRD.md](docs/PHASE_0_PRD.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md), [docs/PHASE_1_RESULTS.md](docs/PHASE_1_RESULTS.md), and [docs/PHASE_2_DATABASE.md](docs/PHASE_2_DATABASE.md) before extending the project.
 
 ## Reproducibility and scope
 

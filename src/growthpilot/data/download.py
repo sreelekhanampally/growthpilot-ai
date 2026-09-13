@@ -47,9 +47,7 @@ def download_dataset(url: str, output_dir: Path, *, force: bool = False) -> Path
                     source.write_bytes(payload)
                     names = []
                 unsafe = [
-                    name
-                    for name in names
-                    if Path(name).is_absolute() or ".." in Path(name).parts
+                    name for name in names if Path(name).is_absolute() or ".." in Path(name).parts
                 ]
                 if unsafe:
                     raise DownloadError("Archive contains an unsafe path")

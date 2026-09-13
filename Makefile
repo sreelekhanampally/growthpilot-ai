@@ -1,4 +1,4 @@
-.PHONY: install test lint sample download phase1
+.PHONY: install test lint sample download phase1 db-upgrade load-db
 
 install:
 	python -m pip install -e ".[dev]"
@@ -17,3 +17,9 @@ download:
 
 phase1:
 	growthpilot phase1 --input data/raw/online_retail_II.xlsx
+
+db-upgrade:
+	growthpilot db-upgrade
+
+load-db:
+	growthpilot load-db

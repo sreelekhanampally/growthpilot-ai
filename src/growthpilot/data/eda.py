@@ -127,23 +127,23 @@ def _write_markdown(
 
 | Metric | Value |
 | --- | ---: |
-| Gross purchase revenue | {_money(summary['gross_revenue'])} |
-| Returned value | {_money(summary['returned_value'])} |
-| Net revenue | {_money(summary['net_revenue'])} |
-| Purchase orders | {summary['orders']:,} |
-| Identified customers | {summary['customers']:,} |
-| Products | {summary['products']:,} |
-| Countries | {summary['countries']:,} |
-| Average order value | {_money(summary['average_order_value'])} |
+| Gross purchase revenue | {_money(summary["gross_revenue"])} |
+| Returned value | {_money(summary["returned_value"])} |
+| Net revenue | {_money(summary["net_revenue"])} |
+| Purchase orders | {summary["orders"]:,} |
+| Identified customers | {summary["customers"]:,} |
+| Products | {summary["products"]:,} |
+| Countries | {summary["countries"]:,} |
+| Average order value | {_money(summary["average_order_value"])} |
 
 ## Data quality
 
-- Input rows: {quality['input_rows']:,}
-- Accepted purchase rows: {quality['purchase_rows']:,}
-- Accepted return rows: {quality['return_rows']:,}
-- Rejected rows: {quality['rejected_rows']:,}
-- Acceptance rate: {quality['acceptance_rate']:.2%}
-- All required quality gates passed: **{quality['all_quality_gates_passed']}**
+- Input rows: {quality["input_rows"]:,}
+- Accepted purchase rows: {quality["purchase_rows"]:,}
+- Accepted return rows: {quality["return_rows"]:,}
+- Rejected rows: {quality["rejected_rows"]:,}
+- Acceptance rate: {quality["acceptance_rate"]:.2%}
+- All required quality gates passed: **{quality["all_quality_gates_passed"]}**
 
 ## Initial observations
 

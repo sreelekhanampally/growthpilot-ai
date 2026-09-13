@@ -44,6 +44,7 @@ A row is **rejected** when one or more of the following apply:
 - `invalid_invoice_date`
 - `invalid_quantity`
 - `zero_quantity`
+- `nonintegral_quantity`
 - `invalid_unit_price`
 - `negative_unit_price`
 - `duplicate_row`
