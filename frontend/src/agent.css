@@ -115,6 +115,10 @@
   text-align: right;
 }
 
+.chat-answer p {
+  white-space: pre-line;
+}
+
 @media (max-width: 720px) {
   .source-grid {
     grid-template-columns: 1fr;

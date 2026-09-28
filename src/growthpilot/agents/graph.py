@@ -8,6 +8,7 @@ from typing import Any
 from growthpilot.agents.llm import ResilientLLMService
 from growthpilot.agents.schemas import AgentCitation, AgentResponse, TraceEvent
 from growthpilot.agents.state import AgentState
+from growthpilot.agents.synthesis import customer_answer, knowledge_answer
 from growthpilot.agents.validator import GroundingValidator
 from growthpilot.rag.retrieval import InMemoryRetriever, RetrievedChunk
 
@@ -44,25 +45,6 @@ class GrowthPilotAgentGraph:
             score=chunk.score,
         )
 
-    @staticmethod
-    def _customer_summary(customer: dict[str, Any]) -> str:
-        return (
-            f"Customer {customer.get('external_customer_id', 'unknown')} is in the "
-            f"{customer.get('segment_name', 'Unclassified')} segment with "
-            f"{customer.get('churn_probability', 0):.0%} churn risk and "
-            f"{customer.get('propensity_probability', 0):.0%} purchase propensity. "
-            "Recommended action: "
-            f"{customer.get('next_action', {}).get('title', 'review the customer profile')}."
-        )
-
-    @staticmethod
-    def _knowledge_summary(chunks: list[RetrievedChunk]) -> str:
-        if not chunks:
-            return "No relevant knowledge was found in the approved GrowthPilot playbook."
-        return "Based on the approved sales playbook: " + " ".join(
-            chunk.content for chunk in chunks[:2]
-        )[:900]
-
     async def _run_tools(self, state: AgentState) -> str:
         decision = state["route_decision"]
         question = state["question"]
@@ -98,7 +80,7 @@ class GrowthPilotAgentGraph:
                 raise LookupError("A customer identifier is required for Customer 360")
             customer = self.customer_lookup(identifier)
             state.setdefault("data", {})["customer"] = customer
-            summary = self._customer_summary(customer)
+            summary = customer_answer(question, customer)
             deterministic_parts.append(summary)
             evidence_parts.append(
                 "CUSTOMER 360 + MODEL OUTPUTS:\n" + json.dumps(customer, default=str)
@@ -120,7 +102,7 @@ class GrowthPilotAgentGraph:
 
         if decision.route in {"knowledge", "hybrid"}:
             chunks = self.retriever.search(question)
-            deterministic_parts.append(self._knowledge_summary(chunks))
+            deterministic_parts.append(knowledge_answer(question, chunks))
             if chunks:
                 evidence_parts.append(
                     "APPROVED PLAYBOOK CHUNKS:\n"

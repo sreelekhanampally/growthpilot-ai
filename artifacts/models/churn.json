@@ -1,7 +1,7 @@
 {
   "model_type": "churn",
   "version": "churn-v1",
-  "trained_at": "2026-09-27T06:50:55.403879+00:00",
+  "trained_at": "2026-09-28T15:14:55.536004+00:00",
   "features": [
     "recency_days",
     "frequency_orders",

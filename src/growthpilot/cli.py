@@ -1,5 +1,11 @@
 import argparse
+import os
 from pathlib import Path
+
+from sqlalchemy import func, inspect, select
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 from growthpilot.config import DEFAULT_UCI_URL, ProjectPaths
 from growthpilot.data.demo import generate_demo_transactions
@@ -7,10 +13,83 @@ from growthpilot.data.download import download_dataset
 from growthpilot.data.pipeline import run_phase1
 from growthpilot.db.loader import load_processed_data
 from growthpilot.db.migrate import upgrade_database
+from growthpilot.db.models import Workspace
 from growthpilot.db.session import build_engine, resolve_database_url
 from growthpilot.features.contract import DEFAULT_FEATURE_VERSION
 from growthpilot.features.service import build_and_store_features
 from growthpilot.ml.orchestrator import train_all
+
+
+def _local_demo_database_url() -> str:
+    database_path = (ProjectPaths().root / "growthpilot.db").resolve().as_posix()
+    return f"sqlite+pysqlite:///{database_path}"
+
+
+def _database_is_ready(database_url: str) -> bool:
+    parsed = make_url(database_url)
+    if parsed.get_backend_name() != "sqlite":
+        return True
+
+    database = parsed.database
+    if database and database != ":memory:" and not Path(database).exists():
+        return False
+
+    engine = build_engine(database_url)
+    try:
+        if not inspect(engine).has_table(Workspace.__tablename__):
+            return False
+        with Session(engine) as session:
+            return bool(session.scalar(select(func.count(Workspace.id))))
+    except SQLAlchemyError:
+        return False
+    finally:
+        engine.dispose()
+
+
+def _setup_demo(database_url: str) -> None:
+    paths = ProjectPaths()
+    demo_path = paths.root / "data" / "demo" / "demo_transactions.csv"
+    generate_demo_transactions(demo_path, customers=240, seed=42)
+    run_phase1(
+        demo_path,
+        processed_dir=paths.processed,
+        report_dir=paths.root / "reports" / "runtime_eda",
+    )
+    upgrade_database(database_url)
+    engine = build_engine(database_url)
+    try:
+        loaded = load_processed_data(
+            engine,
+            paths.processed / "transactions_clean.csv",
+            paths.processed / "transactions_returns.csv",
+            workspace_slug="demo-retail",
+            workspace_name="Demo Retail",
+            currency="GBP",
+        )
+        features = build_and_store_features(
+            engine,
+            workspace_slug="demo-retail",
+            as_of="2011-12-09T23:59:59",
+            feature_version=DEFAULT_FEATURE_VERSION,
+            output_path=paths.processed / "customer_features.csv",
+        )
+        training = train_all(
+            engine,
+            workspace_slug="demo-retail",
+            artifact_dir=paths.root / "artifacts" / "runtime_models",
+            training_output=paths.processed / "supervised_snapshots.csv",
+        )
+    finally:
+        engine.dispose()
+
+    load_action = "Skipped existing import" if loaded.skipped else "Loaded database"
+    feature_action = "Skipped existing snapshot" if features.skipped else "Built features"
+    print(
+        f"Demo recovery complete: {load_action.lower()} with {loaded.loaded_rows} rows; "
+        f"{feature_action.lower()} for {features.customer_count} customers; "
+        f"trained {training.supervised_rows} historical snapshots."
+    )
+    print("Start the API with: python -m growthpilot serve")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -32,6 +111,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     demo.add_argument("--customers", type=int, default=240)
     demo.add_argument("--seed", type=int, default=42)
+
+    setup_demo = subparsers.add_parser(
+        "setup-demo",
+        help="Create or recover the complete local SQLite demo database and model artifacts",
+    )
+    setup_demo.add_argument("--database-url")
 
     phase1 = subparsers.add_parser("phase1", help="Run cleaning, quality checks, and EDA")
     phase1.add_argument("--input", type=Path, required=True)
@@ -84,6 +169,7 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--host", default="0.0.0.0")
     serve.add_argument("--port", type=int, default=8000)
     serve.add_argument("--reload", action="store_true")
+    serve.add_argument("--database-url")
     return parser
 
 
@@ -97,6 +183,15 @@ def main() -> int:
     if args.command == "demo-data":
         path = generate_demo_transactions(args.output, customers=args.customers, seed=args.seed)
         print(f"Synthetic demo dataset ready: {path}")
+        return 0
+
+    if args.command == "setup-demo":
+        database_url = (
+            resolve_database_url(args.database_url)
+            if args.database_url
+            else _local_demo_database_url()
+        )
+        _setup_demo(database_url)
         return 0
 
     if args.command == "db-upgrade":
@@ -157,6 +252,20 @@ def main() -> int:
     if args.command == "serve":
         import uvicorn
 
+        if args.database_url:
+            database_url = resolve_database_url(args.database_url)
+        else:
+            try:
+                database_url = resolve_database_url()
+            except ValueError:
+                database_url = _local_demo_database_url()
+        if not _database_is_ready(database_url):
+            raise SystemExit(
+                "GrowthPilot database is missing or uninitialized.\n"
+                "Recover it with: python -m growthpilot setup-demo\n"
+                "Then start the API again: python -m growthpilot serve"
+            )
+        os.environ["DATABASE_URL"] = database_url
         uvicorn.run("growthpilot.api.main:app", host=args.host, port=args.port, reload=args.reload)
         return 0
 

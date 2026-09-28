@@ -65,6 +65,21 @@ See [Multi-agent Copilot](docs/MULTI_AGENT_COPILOT.md).
 
 The setup script generates a clearly labeled synthetic dataset, runs Phase 1, migrates a local SQLite database, loads transactions, creates the current feature snapshot, and trains all models. It does not require PostgreSQL or external AI credentials.
 
+### Recover a deleted local database
+
+`growthpilot.db` is generated runtime data and is intentionally ignored by Git. If it is deleted,
+GitHub cannot restore it. Rebuild the database, features, scores, recommendations, and model
+artifacts from the tracked demo dataset with:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m growthpilot setup-demo
+python -m growthpilot serve
+```
+
+The `serve` command now detects a missing or uninitialized SQLite database and prints these recovery
+instructions instead of starting an API that can only return database errors.
+
 ## Manual quick start
 
 ```bash
@@ -105,6 +120,7 @@ The repository contains `data/demo/demo_transactions.csv` for an immediate repro
 
 | Command | Outcome |
 | --- | --- |
+| `setup-demo` | Create or recover the complete local SQLite demo database and model artifacts |
 | `demo-data` | Generate deterministic synthetic demo transactions |
 | `download` | Download and validate the official UCI archive/workbook |
 | `phase1` | Clean data, reconcile totals, enforce quality gates, generate EDA |

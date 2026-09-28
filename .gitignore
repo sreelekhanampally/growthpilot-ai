@@ -20,6 +20,8 @@ artifacts/models/*
 !artifacts/models/*.json
 artifacts/embeddings/*
 !artifacts/embeddings/.gitkeep
+artifacts/runtime_models/
+reports/runtime_eda/
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/

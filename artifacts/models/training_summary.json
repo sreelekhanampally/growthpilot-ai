@@ -2,7 +2,7 @@
   "segmentation": {
     "model_type": "segmentation",
     "version": "segmentation-v1",
-    "trained_at": "2026-09-27T06:50:51.994970+00:00",
+    "trained_at": "2026-09-28T15:14:52.231508+00:00",
     "features": [
       "recency_days",
       "frequency_orders",

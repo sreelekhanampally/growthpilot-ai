@@ -1,7 +1,15 @@
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, { headers: { "Content-Type": "application/json", ...options?.headers }, ...options });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, { headers: { "Content-Type": "application/json", ...options?.headers }, ...options });
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error("FastAPI backend is unreachable. Run 'python -m growthpilot serve'. If growthpilot.db was deleted, run 'python -m growthpilot setup-demo' first.");
+    }
+    throw error;
+  }
   if (!response.ok) {
     const body = await response.text();
     try {

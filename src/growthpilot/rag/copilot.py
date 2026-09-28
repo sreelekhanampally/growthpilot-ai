@@ -5,6 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from growthpilot.agents.synthesis import customer_answer, knowledge_answer
 from growthpilot.rag.retrieval import InMemoryRetriever
 
 
@@ -69,15 +70,7 @@ class CopilotService:
         customer_match = self._CUSTOMER_ID.search(normalized)
         if customer_match:
             customer = self.customer_lookup(customer_match.group(1))
-            answer = (
-                f"Customer "
-                f"{customer.get('external_customer_id', customer_match.group(1))} is in the "
-                f"{customer.get('segment_name', 'unclassified')} segment with "
-                f"{customer.get('churn_probability', 0):.0%} churn risk and "
-                f"{customer.get('propensity_probability', 0):.0%} purchase propensity. "
-                "Recommended action: "
-                f"{customer.get('next_action', {}).get('title', 'review the customer profile')}."
-            )
+            answer = customer_answer(question, customer)
             return CopilotAnswer(answer, "customer_intelligence", [], customer)
         if any(term in normalized for term in self._KNOWLEDGE_TERMS):
             return self._knowledge_answer(question)
@@ -102,10 +95,5 @@ class CopilotService:
     def _knowledge_answer(self, question: str) -> CopilotAnswer:
         chunks = self.retriever.search(question)
         citations = [{"source": item.source, "score": item.score} for item in chunks]
-        context = " ".join(item.content for item in chunks[:2])
-        answer = "Based on the sales playbook: " + (
-            context[:650]
-            if context
-            else "No relevant knowledge was found. Add a playbook document and try again."
-        )
+        answer = knowledge_answer(question, chunks)
         return CopilotAnswer(answer, "knowledge", citations, {})
