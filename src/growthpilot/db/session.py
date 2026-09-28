@@ -19,6 +19,12 @@ def resolve_database_url(explicit_url: str | None = None) -> str:
         "sqlite+pysqlite",
     }:
         raise ValueError(f"Unsupported database driver: {parsed.drivername}")
+    # Render and several other managed providers expose ``postgresql://`` URLs.
+    # This project installs psycopg 3 (not psycopg2), so make the driver explicit.
+    if parsed.drivername == "postgresql":
+        return parsed.set(drivername="postgresql+psycopg").render_as_string(
+            hide_password=False
+        )
     return url
 
 

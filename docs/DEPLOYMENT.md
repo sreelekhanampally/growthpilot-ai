@@ -14,7 +14,16 @@ Load data and train through one-off API containers after the database is healthy
 
 ## Render
 
-`deploy/render.yaml` defines PostgreSQL, the Docker API, and the static React app. Set `CORS_ORIGINS` to the frontend URL and `VITE_API_URL` to the API URL. Apply migrations as a release/pre-deploy command before serving traffic. Free plans and availability vary; review current provider settings before deployment.
+The repository-root `render.yaml` defines a free PostgreSQL database, the Python API, and
+the static React site in the Singapore region. The API start command uses
+`--bootstrap-demo`: it migrates and populates an empty database once, then skips the
+bootstrap on normal restarts.
+
+Set `CORS_ORIGINS` to the deployed frontend URL and `VITE_API_URL` to the deployed API
+URL. A computer-local Ollama server is not reachable from Render; use deterministic mode
+or configure a newly generated `GEMINI_API_KEY` as a server-side secret. Never commit the
+key. Free database availability and expiration policies can change, so review the active
+resource in the Render dashboard.
 
 ## Production checklist
 

@@ -7,9 +7,15 @@ from growthpilot.data.pipeline import run_phase1
 from growthpilot.db.loader import load_processed_data
 from growthpilot.db.migrate import alembic_config, upgrade_database
 from growthpilot.db.models import Customer, DataImport, Order, OrderItem, Product, Workspace
-from growthpilot.db.session import build_engine, session_scope
+from growthpilot.db.session import build_engine, resolve_database_url, session_scope
 
 SAMPLE = Path(__file__).parents[1] / "data" / "sample" / "online_retail_sample.csv"
+
+
+def test_managed_postgres_url_uses_installed_psycopg3_driver() -> None:
+    resolved = resolve_database_url("postgresql://user:password@example.test:5432/app")
+
+    assert resolved.startswith("postgresql+psycopg://")
 
 
 def _prepared_sample(tmp_path: Path) -> tuple[Path, Path]:

@@ -27,12 +27,10 @@ def _local_demo_database_url() -> str:
 
 def _database_is_ready(database_url: str) -> bool:
     parsed = make_url(database_url)
-    if parsed.get_backend_name() != "sqlite":
-        return True
-
-    database = parsed.database
-    if database and database != ":memory:" and not Path(database).exists():
-        return False
+    if parsed.get_backend_name() == "sqlite":
+        database = parsed.database
+        if database and database != ":memory:" and not Path(database).exists():
+            return False
 
     engine = build_engine(database_url)
     try:
@@ -170,6 +168,11 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--port", type=int, default=8000)
     serve.add_argument("--reload", action="store_true")
     serve.add_argument("--database-url")
+    serve.add_argument(
+        "--bootstrap-demo",
+        action="store_true",
+        help="Initialize an empty deployment database with the synthetic demo dataset",
+    )
     return parser
 
 
@@ -259,6 +262,9 @@ def main() -> int:
                 database_url = resolve_database_url()
             except ValueError:
                 database_url = _local_demo_database_url()
+        if args.bootstrap_demo and not _database_is_ready(database_url):
+            print("Deployment database is empty; building the GrowthPilot demo dataset...")
+            _setup_demo(database_url)
         if not _database_is_ready(database_url):
             raise SystemExit(
                 "GrowthPilot database is missing or uninitialized.\n"
