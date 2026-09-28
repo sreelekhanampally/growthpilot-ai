@@ -33,7 +33,9 @@ retrieval.
 ### Analytics agent
 
 Calls `IntelligenceService.analytics_answer`. The service exposes approved operations for revenue,
-segments, countries, churn risk, and sales opportunities. The model never receives database
+customer count, segments, countries, churn risk, propensity, and sales opportunities. Unsupported
+analytics wording returns the approved metric catalog instead of silently defaulting to revenue.
+The model never receives database
 credentials and never generates executable SQL.
 
 ### Customer Intelligence agent

@@ -3,7 +3,7 @@ import asyncio
 import httpx
 
 from growthpilot.agents.graph import GrowthPilotAgentGraph
-from growthpilot.agents.llm import ModelBackend, ResilientLLMService
+from growthpilot.agents.llm import ModelBackend, ResilientLLMService, deterministic_route
 from growthpilot.agents.validator import GroundingValidator
 from growthpilot.rag.embeddings import EmbeddingModel
 from growthpilot.rag.retrieval import InMemoryRetriever
@@ -55,6 +55,17 @@ def test_agent_graph_routes_analytics_through_safe_tool():
         "validator_agent",
     ]
     assert response.citations[0].source.startswith("SQL:")
+
+
+def test_customer_count_variants_route_to_analytics():
+    for question in (
+        "How many customers do we have?",
+        "What is the customer count?",
+        "What is the total number of customers?",
+    ):
+        decision = deterministic_route(question)
+        assert decision is not None
+        assert decision.route == "analytics"
 
 
 def test_agent_graph_combines_sql_and_rag_for_strategy_question():

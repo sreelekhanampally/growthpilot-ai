@@ -22,7 +22,7 @@ export const api = {
   segments: () => request<Segment[]>("/api/v1/segments"),
   opportunities: () => request<Opportunity[]>("/api/v1/opportunities"),
   models: () => request<ModelRun[]>("/api/v1/models/performance"),
-  copilot: (question: string) => request<CopilotResponse>("/api/v1/copilot/chat", { method: "POST", body: JSON.stringify({ question }) }),
+  copilot: (question: string) => request<CopilotResponse>("/api/v1/copilot/chat", { method: "POST", cache: "no-store", body: JSON.stringify({ question }) }),
 };
 
 export type Dashboard = { currency: string; customers: number; lifetime_revenue: number; high_churn_risk: number; sales_opportunities: number; segments: { name: string; customers: number }[] };

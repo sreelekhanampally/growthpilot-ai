@@ -387,7 +387,10 @@ class IntelligenceService:
                 "segments": segments,
                 "source": "SQL: customer_segments",
             }
-        if "opportunit" in question or "contact" in question:
+        if any(
+            term in question
+            for term in ("opportunit", "contact", "propensity", "purchase intent")
+        ):
             rows = self.opportunities(20)
             top = ", ".join(
                 f"{row['external_customer_id']} ({row['propensity_probability']:.0%})"
@@ -427,12 +430,44 @@ class IntelligenceService:
                 "customers": rows,
                 "source": "SQL: model_scores + customers (latest churn model)",
             }
+        if any(
+            term in question
+            for term in (
+                "how many customer",
+                "number of customer",
+                "customer count",
+                "count of customer",
+                "total customer",
+            )
+        ):
+            return {
+                "summary": f"GrowthPilot currently has {dashboard['customers']:,} customers.",
+                "customer_count": dashboard["customers"],
+                "source": "SQL: customers",
+            }
+        if any(term in question for term in ("revenue", "sales", "turnover")):
+            return {
+                "summary": f"Lifetime purchase revenue is {dashboard['currency']} "
+                f"{dashboard['lifetime_revenue']:,.2f} across "
+                f"{dashboard['customers']:,} customers.",
+                "source": "SQL: customer_feature_snapshots + customers",
+                **dashboard,
+            }
         return {
-            "summary": f"Lifetime purchase revenue is {dashboard['currency']} "
-            f"{dashboard['lifetime_revenue']:,.2f} across "
-            f"{dashboard['customers']:,} customers.",
-            "source": "SQL: customer_feature_snapshots + customers",
-            **dashboard,
+            "summary": (
+                "I could not map that question to an approved analytics metric. "
+                "Ask about revenue, customer count, segments, churn risk, sales "
+                "opportunities, or country performance."
+            ),
+            "supported_metrics": [
+                "revenue",
+                "customer count",
+                "segments",
+                "churn risk",
+                "sales opportunities",
+                "country performance",
+            ],
+            "source": "GrowthPilot approved analytics catalog",
         }
 
     def create_action(self, customer_id: int, payload: dict[str, Any]) -> dict[str, Any]:

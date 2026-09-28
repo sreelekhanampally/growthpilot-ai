@@ -41,6 +41,9 @@ _ANALYTICS_TERMS = (
     "opportunit",
     "propensity",
     "purchase intent",
+    "customer count",
+    "number of customer",
+    "total customer",
 )
 
 

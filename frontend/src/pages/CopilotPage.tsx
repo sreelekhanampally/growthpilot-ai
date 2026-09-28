@@ -21,14 +21,19 @@ export function CopilotPage() {
   const [response, setResponse] = useState<CopilotResponse | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function submit(event: FormEvent) {
-    event.preventDefault();
+  async function ask(nextQuestion: string) {
+    const normalizedQuestion = nextQuestion.trim();
+    if (!normalizedQuestion || busy) return;
+
     setBusy(true);
+    setAnswer("Analyzing your latest question…");
+    setIntent("");
+    setResponse(null);
     try {
-      const response = await api.copilot(question);
-      setAnswer(response.answer);
-      setIntent(response.intent);
-      setResponse(response);
+      const result = await api.copilot(normalizedQuestion);
+      setAnswer(result.answer);
+      setIntent(result.intent);
+      setResponse(result);
     } catch (error) {
       setAnswer(error instanceof Error ? error.message : "Request failed");
       setIntent("");
@@ -38,18 +43,23 @@ export function CopilotPage() {
     }
   }
 
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    void ask(question);
+  }
+
   return <section>
     <div className="section-head">
       <div><h2>GrowthPilot Copilot</h2><p>Grounded in structured analytics, model outputs, and your sales playbook.</p></div>
       <span className="pill">Multi-agent · grounded</span>
     </div>
-    <article className="copilot">
-      <div className="chat-answer"><span>GP</span><div>{intent && <small>{labels[intent] ?? intent}</small>}<p>{answer}</p></div></div>
+    <article className="copilot" aria-busy={busy}>
+      <div className="chat-answer" aria-live="polite"><span>GP</span><div>{intent && <small>{labels[intent] ?? intent}</small>}<p>{answer}</p></div></div>
       <form onSubmit={submit}>
-        <textarea value={question} onChange={event => setQuestion(event.target.value)} rows={3}/>
-        <button disabled={busy}>{busy ? "Thinking…" : "Ask GrowthPilot"}</button>
+        <textarea value={question} onChange={event => setQuestion(event.target.value)} rows={3} disabled={busy}/>
+        <button type="submit" disabled={busy || !question.trim()}>{busy ? "Thinking…" : "Ask GrowthPilot"}</button>
       </form>
-      <div className="prompts">{["Why is Customer 15000 at risk?", "Which segment is largest?", "What is our revenue?"].map(prompt => <button key={prompt} onClick={() => setQuestion(prompt)}>{prompt}</button>)}</div>
+      <div className="prompts">{["Why is Customer 15000 at risk?", "Which segment is largest?", "What is our revenue?"].map(prompt => <button type="button" key={prompt} disabled={busy} onClick={() => { setQuestion(prompt); void ask(prompt); }}>{prompt}</button>)}</div>
     </article>
     {response && <div className="agent-results">
       <AgentTrace trace={response.trace} validation={response.validation}/>
