@@ -1,0 +1,107 @@
+{
+  "model_type": "churn",
+  "version": "churn-v1",
+  "trained_at": "2026-09-27T06:50:55.403879+00:00",
+  "features": [
+    "recency_days",
+    "frequency_orders",
+    "monetary_value",
+    "net_revenue",
+    "total_items",
+    "unique_products",
+    "average_order_value",
+    "average_basket_size",
+    "customer_tenure_days",
+    "purchase_interval_mean_days",
+    "purchase_interval_std_days",
+    "orders_30d",
+    "orders_90d",
+    "orders_180d",
+    "revenue_30d",
+    "revenue_90d",
+    "revenue_180d",
+    "orders_previous_30d",
+    "revenue_previous_30d",
+    "purchase_frequency_change_30d",
+    "revenue_growth_30d",
+    "return_orders",
+    "returned_value",
+    "cancellation_rate",
+    "return_value_rate",
+    "rfm_recency_score",
+    "rfm_frequency_score",
+    "rfm_monetary_score"
+  ],
+  "metrics": {
+    "validation": {
+      "threshold": 0.73,
+      "f1": 0.866426,
+      "precision": 0.882353,
+      "recall": 0.851064,
+      "confusion_matrix": [
+        [
+          563,
+          16
+        ],
+        [
+          21,
+          120
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.195833,
+      "roc_auc": 0.95071,
+      "pr_auc": 0.907954
+    },
+    "test": {
+      "threshold": 0.73,
+      "f1": 0.920354,
+      "precision": 0.934132,
+      "recall": 0.906977,
+      "confusion_matrix": [
+        [
+          537,
+          11
+        ],
+        [
+          16,
+          156
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.238889,
+      "roc_auc": 0.985879,
+      "pr_auc": 0.976443
+    },
+    "split": {
+      "train_rows": 1885,
+      "validation_rows": 720,
+      "test_rows": 720,
+      "train_through": "2011-03-01 00:00:00",
+      "validation_through": "2011-06-01 00:00:00",
+      "test_through": "2011-09-01 00:00:00"
+    },
+    "global_explanations": [
+      {
+        "feature": "purchase_interval_mean_days",
+        "importance": 0.127234
+      },
+      {
+        "feature": "purchase_interval_std_days",
+        "importance": 0.014364
+      },
+      {
+        "feature": "total_items",
+        "importance": 0.00028
+      },
+      {
+        "feature": "recency_days",
+        "importance": 0.000157
+      },
+      {
+        "feature": "monetary_value",
+        "importance": 0.000124
+      }
+    ]
+  }
+}

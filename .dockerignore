@@ -1,0 +1,12 @@
+.git
+.venv
+__pycache__
+*.pyc
+*.db
+*.sqlite*
+data/raw
+data/interim
+data/processed
+frontend/node_modules
+frontend/dist
+artifacts/models/*.joblib

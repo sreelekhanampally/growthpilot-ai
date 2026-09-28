@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "growthpilot-ai"
-version = "0.2.0"
+version = "1.1.0"
 description = "GrowthPilot AI sales and customer-intelligence platform"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,14 +14,47 @@ dependencies = [
   "numpy>=1.26,<3.0",
   "openpyxl>=3.1,<4.0",
   "matplotlib>=3.8,<4.0",
+  "fastapi>=0.115,<1.0",
+  "httpx>=0.28,<1.0",
+  "joblib>=1.4,<2.0",
+  "scikit-learn>=1.5,<2.0",
+  "scipy>=1.13,<2.0",
+  "pgvector>=0.3,<1.0",
   "psycopg[binary]>=3.2,<4.0",
+  "pydantic-settings>=2.7,<3.0",
   "sqlalchemy>=2.0,<3.0",
+  "uvicorn[standard]>=0.34,<1.0",
 ]
 
 [project.optional-dependencies]
 dev = [
+  "coverage[toml]>=7.6,<8.0",
   "pytest>=8.3,<9.0",
+  "pytest-cov>=6.0,<7.0",
   "ruff>=0.9,<1.0",
+]
+
+light = [
+  "fastapi>=0.115,<1.0",
+  "httpx>=0.28,<1.0",
+  "joblib>=1.4,<2.0",
+  "scikit-learn>=1.5,<2.0",
+  "uvicorn[standard]>=0.34,<1.0",
+]
+
+full = [
+  "xgboost>=2.1,<4.0",
+  "shap>=0.46,<1.0",
+  "sentence-transformers>=3.3,<6.0",
+]
+
+ml = [
+  "xgboost>=2.1,<4.0",
+  "shap>=0.46,<1.0",
+]
+
+rag = [
+  "sentence-transformers>=3.3,<6.0",
 ]
 
 [project.scripts]

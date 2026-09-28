@@ -1,30 +1,24 @@
 {
   "contract_version": "1.0",
-  "input_rows": 1067371,
-  "purchase_rows": 779495,
-  "return_rows": 18390,
-  "rejected_rows": 269486,
-  "accepted_rows": 797885,
-  "acceptance_rate": 0.747524,
-  "unique_customers": 5942,
-  "unique_products": 4646,
-  "date_min": "2009-12-01T07:45:00",
-  "date_max": "2011-12-09T12:50:00",
-  "gross_purchase_revenue": 17374804.27,
-  "returned_value": 1084812.98,
-  "net_revenue": 16289991.29,
-  "rejection_reason_counts": {
-    "cancellation_positive_quantity": 1,
-    "duplicate_row": 34335,
-    "missing_customer_id": 243007,
-    "negative_unit_price": 5,
-    "purchase_nonpositive_quantity": 3457
-  },
+  "input_rows": 13981,
+  "purchase_rows": 13858,
+  "return_rows": 123,
+  "rejected_rows": 0,
+  "accepted_rows": 13981,
+  "acceptance_rate": 1.0,
+  "unique_customers": 240,
+  "unique_products": 80,
+  "date_min": "2009-12-29T00:00:00",
+  "date_max": "2011-12-09T00:00:00",
+  "gross_purchase_revenue": 865258.09,
+  "returned_value": 1563.48,
+  "net_revenue": 863694.61,
+  "rejection_reason_counts": {},
   "quality_gates": [
     {
       "name": "row_reconciliation",
       "passed": true,
-      "detail": "1067371 input rows vs 1067371 classified rows"
+      "detail": "13981 input rows vs 13981 classified rows"
     },
     {
       "name": "unique_source_rows",

@@ -1,42 +1,7 @@
 country,revenue,orders,customers
-United Kingdom,14389234.917,33546,5353
-EIRE,616570.54,567,5
-Netherlands,554038.09,229,22
-Germany,425019.711,789,107
-France,348768.96,614,95
-Australia,169283.46,95,15
-Spain,108332.49,154,41
-Switzerland,100061.94,90,22
-Sweden,91515.82,104,19
-Denmark,68580.69,43,12
-Belgium,65387.82,149,29
-Norway,56322.5,45,13
-Portugal,55554.78,93,24
-Channel Islands,44623.33,55,13
-Japan,43023.909999999996,33,10
-Italy,32108.170000000002,65,17
-Finland,29925.54,57,14
-Singapore,25317.06,11,1
-Cyprus,24849.95,37,11
-Austria,23613.010000000002,45,13
-Greece,19096.19,18,5
-Poland,10654.29,28,6
-Israel,10415.24,7,4
-United Arab Emirates,9202.69,11,4
-Unspecified,8607.35,16,6
-USA,8366.86,20,9
-Malta,8099.09,9,2
-Iceland,4921.53,8,1
-Lithuania,4892.68,6,1
-Canada,4883.04,8,5
-Thailand,3070.54,2,1
-RSA,1933.74,2,2
-Lebanon,1693.88,1,1
-Brazil,1411.87,2,2
-Bahrain,1354.37,4,2
-European Community,1300.25,4,1
-Korea,1118.51,2,2
-Czech Republic,826.74,2,1
-West Indies,536.41,1,1
-Saudi Arabia,145.92,1,1
-Nigeria,140.39000000000001,2,1
+United Kingdom,638422.12,2570,176
+Germany,63532.36,250,17
+France,56929.02,221,19
+Netherlands,55679.76,225,15
+Spain,28698.29,115,8
+Belgium,21996.54,83,5

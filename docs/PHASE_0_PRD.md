@@ -1,5 +1,7 @@
 # Phase 0 Product Requirements Document
 
+> This document records the Phase 0 scope boundary used to protect the data foundation. The layers deferred here are now implemented; see `PHASES_4_20.md` for the completed system.
+
 ## 1. Product definition
 
 **GrowthPilot AI** is a decision-support application that helps a retail SME decide whom to contact, what action to take, and why. It joins customer analytics, predictive models, recommendations, and grounded AI explanations in one workflow.

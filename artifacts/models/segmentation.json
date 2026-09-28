@@ -1,0 +1,87 @@
+{
+  "model_type": "segmentation",
+  "version": "segmentation-v1",
+  "trained_at": "2026-09-27T06:50:51.994970+00:00",
+  "features": [
+    "recency_days",
+    "frequency_orders",
+    "monetary_value",
+    "unique_products",
+    "customer_tenure_days"
+  ],
+  "selected_k": 3,
+  "silhouette": 0.352817,
+  "stability": 0.991147,
+  "candidates": [
+    {
+      "k": 3,
+      "silhouette": 0.35281708700148295,
+      "stability": 0.9911474830384082,
+      "score": 0.5443162058125605
+    },
+    {
+      "k": 4,
+      "silhouette": 0.33079534143071887,
+      "stability": 1.0,
+      "score": 0.5315567390015032
+    },
+    {
+      "k": 5,
+      "silhouette": 0.2747190415692321,
+      "stability": 0.9908118623086445,
+      "score": 0.4895468877910558
+    },
+    {
+      "k": 6,
+      "silhouette": 0.2842667122939686,
+      "stability": 0.9587037958325162,
+      "score": 0.48659783735553286
+    },
+    {
+      "k": 7,
+      "silhouette": 0.2787586039420365,
+      "stability": 0.9758437109628518,
+      "score": 0.48788413604828107
+    },
+    {
+      "k": 8,
+      "silhouette": 0.2782496602058411,
+      "stability": 0.9008662434106419,
+      "score": 0.4650346351672813
+    }
+  ],
+  "cluster_names": {
+    "0": "Loyal Customers",
+    "1": "Potential Loyalists",
+    "2": "Champions"
+  },
+  "profiles": [
+    {
+      "cluster_id": 0,
+      "segment_name": "Loyal Customers",
+      "recency_days": 25.5,
+      "frequency_orders": 11.0,
+      "monetary_value": 2646.775,
+      "unique_products": 11.0,
+      "customer_tenure_days": 510.5
+    },
+    {
+      "cluster_id": 1,
+      "segment_name": "Potential Loyalists",
+      "recency_days": 340.0,
+      "frequency_orders": 4.0,
+      "monetary_value": 954.85,
+      "unique_products": 8.0,
+      "customer_tenure_days": 558.0
+    },
+    {
+      "cluster_id": 2,
+      "segment_name": "Champions",
+      "recency_days": 11.0,
+      "frequency_orders": 25.0,
+      "monetary_value": 6109.12,
+      "unique_products": 12.0,
+      "customer_tenure_days": 615.0
+    }
+  ]
+}

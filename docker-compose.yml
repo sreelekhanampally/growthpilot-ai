@@ -1,0 +1,41 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: growthpilot
+      POSTGRES_USER: growthpilot
+      POSTGRES_PASSWORD: growthpilot
+    ports: ["5432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U growthpilot -d growthpilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://growthpilot:growthpilot@db:5432/growthpilot
+      WORKSPACE_SLUG: demo-retail
+      CORS_ORIGINS: http://localhost:5173
+      LLM_PROVIDER: ${LLM_PROVIDER:-deterministic}
+      HYBRID_PRIMARY: ${HYBRID_PRIMARY:-gemini}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      OLLAMA_ENABLED: ${OLLAMA_ENABLED:-false}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
+    ports: ["8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data
+  frontend:
+    build: ./frontend
+    ports: ["5173:80"]
+    depends_on: [api]
+
+volumes:
+  postgres_data:

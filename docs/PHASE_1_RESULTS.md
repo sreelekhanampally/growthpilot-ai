@@ -1,7 +1,8 @@
 # Phase 1 Verification Results
 
-Run date: 2026-09-13  
-Dataset: UCI Online Retail II  
+Run date: 2026-09-13
+
+Dataset: UCI Online Retail II
 Coverage: 2009-12-01 07:45 through 2011-12-09 12:50
 
 ## Classification and quality

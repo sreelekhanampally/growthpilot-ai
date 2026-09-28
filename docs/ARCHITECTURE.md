@@ -39,7 +39,7 @@ flowchart TD
 | Decision engine | explicit prioritization/action policy | prose generation |
 | Analytics | deterministic metrics and comparisons | semantic document retrieval |
 | RAG | knowledge chunking and semantic retrieval | calculating transactional metrics |
-| Copilot | intent routing and grounded answer composition | unrestricted database/SQL execution |
+| Copilot | multi-agent routing, bounded synthesis, validation, citations, traces | unrestricted database/SQL execution |
 | Feedback | actions, statuses, outcomes | retrospectively altering prior scores |
 
 ## Phase 1 data flow
@@ -64,30 +64,34 @@ flowchart TD
 | Application architecture | FastAPI modular monolith | One Python boundary supports analytics, inference, and RAG while modules remain separable. |
 | Operational store | PostgreSQL | Strong relational fit for customers, orders, scores, actions, and audit data. |
 | Vector search | pgvector | Avoids a second database and supports exact/HNSW retrieval when needed. |
-| Batch data | Pandas + Parquet in later phases | Appropriate dataset scale and transparent transformations. CSV is retained in Phase 1 for zero-extra-engine portability. |
+| Batch data | Pandas + versioned snapshots | Appropriate dataset scale and transparent transformations. CSV remains the portable interchange format. |
 | Classical ML | scikit-learn + XGBoost | Strong tabular baselines, probabilities, and explainability ecosystem. |
 | Embeddings | all-MiniLM-L6-v2 adapter | Free local 384-dimensional baseline; provider abstraction prevents lock-in. |
 | UI | React + Vite + Tailwind + TanStack Query | Existing team familiarity and productive dashboard stack. |
-| Packaging | Docker Compose later | Reproducible local demonstration without Kubernetes overhead. |
+| Packaging | Docker Compose | Reproducible local demonstration without Kubernetes overhead. |
 
 ## Planned storage model
 
 Core tables: `workspaces`, `users`, `customers`, `products`, `orders`, `order_items`, `customer_feature_snapshots`, `customer_segments`, `model_scores`, `recommendations`, `next_best_actions`, `action_outcomes`, `documents`, `document_chunks`, `copilot_conversations`, and `model_runs`.
 
-Phase 2 implements `workspaces`, `data_imports`, `customers`, `products`, `orders`, and `order_items`. The remaining tables are introduced only with the feature that owns them.
+Phase 2 implements `workspaces`, `data_imports`, `customers`, `products`, `orders`, and `order_items`. Phase 3 adds `feature_runs` and `customer_feature_snapshots`. Phase 4 onward adds model runs, scores, segments, recommendations, actions, knowledge chunks, and copilot conversations.
 
 Every business table will include `workspace_id`. Time-varying facts carry an `as_of_date` or timestamp plus a feature/model/policy version.
 
-## Copilot safety boundary
+## Multi-agent Copilot safety boundary
 
-The copilot router distinguishes four classes:
+The supervisor distinguishes four classes:
 
 1. **Metrics:** call allow-listed parameterized analytics functions.
 2. **Customer intelligence:** retrieve a Customer 360 fact bundle and current predictions.
 3. **Recommendations:** call the versioned recommendation/decision service.
 4. **Knowledge/strategy:** retrieve approved document chunks through pgvector.
 
-The LLM receives bounded facts and sources. It cannot generate and execute arbitrary SQL, send customer messages, or change action status.
+The specialist graph runs `supervisor → approved tools → reasoning → validator`, with at most one
+repair pass. Common routes remain deterministic; Gemini or Ollama helps with ambiguous routing and
+bounded answer synthesis when configured. The LLM receives bounded facts and sources. It cannot
+generate and execute arbitrary SQL, send customer messages, or change action status. See
+[MULTI_AGENT_COPILOT.md](MULTI_AGENT_COPILOT.md).
 
 ## Deferred architecture decisions
 

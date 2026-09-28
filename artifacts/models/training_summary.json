@@ -1,0 +1,239 @@
+{
+  "segmentation": {
+    "model_type": "segmentation",
+    "version": "segmentation-v1",
+    "trained_at": "2026-09-27T06:50:51.994970+00:00",
+    "features": [
+      "recency_days",
+      "frequency_orders",
+      "monetary_value",
+      "unique_products",
+      "customer_tenure_days"
+    ],
+    "selected_k": 3,
+    "silhouette": 0.352817,
+    "stability": 0.991147,
+    "candidates": [
+      {
+        "k": 3,
+        "silhouette": 0.35281708700148295,
+        "stability": 0.9911474830384082,
+        "score": 0.5443162058125605
+      },
+      {
+        "k": 4,
+        "silhouette": 0.33079534143071887,
+        "stability": 1.0,
+        "score": 0.5315567390015032
+      },
+      {
+        "k": 5,
+        "silhouette": 0.2747190415692321,
+        "stability": 0.9908118623086445,
+        "score": 0.4895468877910558
+      },
+      {
+        "k": 6,
+        "silhouette": 0.2842667122939686,
+        "stability": 0.9587037958325162,
+        "score": 0.48659783735553286
+      },
+      {
+        "k": 7,
+        "silhouette": 0.2787586039420365,
+        "stability": 0.9758437109628518,
+        "score": 0.48788413604828107
+      },
+      {
+        "k": 8,
+        "silhouette": 0.2782496602058411,
+        "stability": 0.9008662434106419,
+        "score": 0.4650346351672813
+      }
+    ],
+    "cluster_names": {
+      "0": "Loyal Customers",
+      "1": "Potential Loyalists",
+      "2": "Champions"
+    },
+    "profiles": [
+      {
+        "cluster_id": 0,
+        "segment_name": "Loyal Customers",
+        "recency_days": 25.5,
+        "frequency_orders": 11.0,
+        "monetary_value": 2646.775,
+        "unique_products": 11.0,
+        "customer_tenure_days": 510.5
+      },
+      {
+        "cluster_id": 1,
+        "segment_name": "Potential Loyalists",
+        "recency_days": 340.0,
+        "frequency_orders": 4.0,
+        "monetary_value": 954.85,
+        "unique_products": 8.0,
+        "customer_tenure_days": 558.0
+      },
+      {
+        "cluster_id": 2,
+        "segment_name": "Champions",
+        "recency_days": 11.0,
+        "frequency_orders": 25.0,
+        "monetary_value": 6109.12,
+        "unique_products": 12.0,
+        "customer_tenure_days": 615.0
+      }
+    ]
+  },
+  "churn": {
+    "validation": {
+      "threshold": 0.73,
+      "f1": 0.866426,
+      "precision": 0.882353,
+      "recall": 0.851064,
+      "confusion_matrix": [
+        [
+          563,
+          16
+        ],
+        [
+          21,
+          120
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.195833,
+      "roc_auc": 0.95071,
+      "pr_auc": 0.907954
+    },
+    "test": {
+      "threshold": 0.73,
+      "f1": 0.920354,
+      "precision": 0.934132,
+      "recall": 0.906977,
+      "confusion_matrix": [
+        [
+          537,
+          11
+        ],
+        [
+          16,
+          156
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.238889,
+      "roc_auc": 0.985879,
+      "pr_auc": 0.976443
+    },
+    "split": {
+      "train_rows": 1885,
+      "validation_rows": 720,
+      "test_rows": 720,
+      "train_through": "2011-03-01 00:00:00",
+      "validation_through": "2011-06-01 00:00:00",
+      "test_through": "2011-09-01 00:00:00"
+    },
+    "global_explanations": [
+      {
+        "feature": "purchase_interval_mean_days",
+        "importance": 0.127234
+      },
+      {
+        "feature": "purchase_interval_std_days",
+        "importance": 0.014364
+      },
+      {
+        "feature": "total_items",
+        "importance": 0.00028
+      },
+      {
+        "feature": "recency_days",
+        "importance": 0.000157
+      },
+      {
+        "feature": "monetary_value",
+        "importance": 0.000124
+      }
+    ]
+  },
+  "propensity": {
+    "validation": {
+      "threshold": 0.24,
+      "f1": 0.85881,
+      "precision": 0.825112,
+      "recall": 0.895377,
+      "confusion_matrix": [
+        [
+          231,
+          78
+        ],
+        [
+          43,
+          368
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.570833,
+      "roc_auc": 0.91048,
+      "pr_auc": 0.929308
+    },
+    "test": {
+      "threshold": 0.24,
+      "f1": 0.885922,
+      "precision": 0.862884,
+      "recall": 0.910224,
+      "confusion_matrix": [
+        [
+          261,
+          58
+        ],
+        [
+          36,
+          365
+        ]
+      ],
+      "support": 720,
+      "positive_rate": 0.556944,
+      "roc_auc": 0.94144,
+      "pr_auc": 0.951662
+    },
+    "split": {
+      "train_rows": 1885,
+      "validation_rows": 720,
+      "test_rows": 720,
+      "train_through": "2011-03-01 00:00:00",
+      "validation_through": "2011-06-01 00:00:00",
+      "test_through": "2011-09-01 00:00:00"
+    },
+    "global_explanations": [
+      {
+        "feature": "purchase_interval_mean_days",
+        "importance": 0.267875
+      },
+      {
+        "feature": "recency_days",
+        "importance": 0.170731
+      },
+      {
+        "feature": "purchase_interval_std_days",
+        "importance": 0.011636
+      },
+      {
+        "feature": "average_basket_size",
+        "importance": 0.006104
+      },
+      {
+        "feature": "customer_tenure_days",
+        "importance": 0.004945
+      }
+    ]
+  },
+  "recommender": {
+    "hit_rate_at_k": 0.075,
+    "mrr_at_k": 0.021331,
+    "evaluated_customers": 240,
+    "k": 10
+  }
+}
