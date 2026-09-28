@@ -1,11 +1,11 @@
-from pathlib import Path
-
 from alembic import command
 from alembic.config import Config
 
+from growthpilot.config import find_project_root
+
 
 def alembic_config(database_url: str) -> Config:
-    root = Path(__file__).resolve().parents[3]
+    root = find_project_root()
     config = Config(root / "alembic.ini")
     config.set_main_option("script_location", str(root / "migrations"))
     config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))

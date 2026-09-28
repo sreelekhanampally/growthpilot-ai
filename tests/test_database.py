@@ -3,6 +3,7 @@ from pathlib import Path
 from alembic import command
 from sqlalchemy import func, inspect, select
 
+from growthpilot.config import find_project_root
 from growthpilot.data.pipeline import run_phase1
 from growthpilot.db.loader import load_processed_data
 from growthpilot.db.migrate import alembic_config, upgrade_database
@@ -10,6 +11,16 @@ from growthpilot.db.models import Customer, DataImport, Order, OrderItem, Produc
 from growthpilot.db.session import build_engine, resolve_database_url, session_scope
 
 SAMPLE = Path(__file__).parents[1] / "data" / "sample" / "online_retail_sample.csv"
+
+
+def test_project_root_discovery_finds_repository_from_nested_directory(tmp_path: Path) -> None:
+    project_root = tmp_path / "checkout"
+    nested = project_root / "frontend" / "src"
+    nested.mkdir(parents=True)
+    (project_root / "migrations").mkdir()
+    (project_root / "alembic.ini").write_text("[alembic]\n", encoding="utf-8")
+
+    assert find_project_root(nested) == project_root
 
 
 def test_managed_postgres_url_uses_installed_psycopg3_driver() -> None:
